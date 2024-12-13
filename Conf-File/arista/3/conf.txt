@@ -1,0 +1,141 @@
+! Command: show running-config
+! device: RR (vEOS-lab, EOS-4.29.0.2F)
+!
+! boot system flash:/vEOS-lab.swi
+!
+enable password sha512 $6$LqGyROaoV5iZaIck$dPqC6nkD2NrohZEBa3IKRJA73BauIn4ediXlH18weQ3ApfTLCO7YE2kRixo9iWyMAgI7tBTK1wRAm90/kUboX.
+no aaa root
+!
+username cvpadmin privilege 15 secret sha512 $6$/M6tySe.0CtB5CZv$rVY5wujDkMsPcvmGQhniPVnkmRBbDT/O3w1WW/hpOGa3CSFXQ5ClwEnUvg0uxxZil0l8MmE14Oq710jPohAl41
+!
+transceiver qsfp default-mode 4x10G
+!
+service routing protocols model multi-agent
+!
+hostname RR
+!
+spanning-tree mode mstp
+no spanning-tree vlan-id 4094
+!
+vrf instance managment
+!
+vrf instance vrf_routing
+!
+management api http-commands
+   protocol http
+   no shutdown
+   !
+   vrf managment
+      no shutdown
+!
+aaa authentication login console local
+aaa authorization exec default local
+!
+interface Ethernet1
+   load-interval 30
+   no switchport
+   ip address 10.0.0.14/30
+   ip ospf authentication message-digest
+   ip ospf message-digest-key 1 md5 7 Gdl7wVuez+4oLeysYYU2Zw==
+!
+interface Ethernet2
+   load-interval 30
+   no switchport
+   ip address 10.0.0.25/30
+   ip ospf authentication message-digest
+   ip ospf message-digest-key 1 md5 7 mvuooUK2bIfuUo33B/SsnQ==
+!
+interface Ethernet3
+!
+interface Ethernet4
+   load-interval 30
+   no switchport
+   ip address 10.0.0.6/30
+   ip ospf authentication message-digest
+   ip ospf message-digest-key 1 md5 7 JEIFP1S3/ZZB08s8r8iqEA==
+!
+interface Ethernet5
+   load-interval 30
+   no switchport
+   ip address 10.0.0.29/30
+   ip ospf authentication message-digest
+   ip ospf message-digest-key 1 md5 7 JEIFP1S3/ZZB08s8r8iqEA==
+!
+interface Ethernet6
+!
+interface Ethernet7
+!
+interface Ethernet8
+!
+interface Loopback0
+   ip address 3.3.3.3/32
+!
+interface Loopback1
+   ip address 33.33.33.33/32
+!
+interface Management1
+   vrf managment
+   ip address 10.43.192.114/24
+!
+ip routing
+no ip routing vrf managment
+ip routing vrf vrf_routing
+!
+ipv6 unicast-routing vrf vrf_routing
+!
+ip route vrf managment 0.0.0.0/0 10.43.192.254
+!
+mpls ip
+!
+mpls ldp
+   router-id interface Loopback1
+   neighbor hello-redundancy duration 100
+   no shutdown
+!
+route-map BGP-IMPORT-VRF-SERVICES permit 10
+   match extcommunity SERVICES
+   match ip address prefix-list SERVICES
+!
+router bgp 65100
+   router-id 3.3.3.3
+   bgp route-reflector preserve-attributes
+   maximum-paths 4 ecmp 4
+   neighbor PEER-RR peer group
+   neighbor PEER-RR remote-as 65100
+   neighbor PEER-RR update-source Loopback0
+   neighbor PEER-RR route-reflector-client
+   neighbor 1.1.1.1 peer group PEER-RR
+   neighbor 2.2.2.2 peer group PEER-RR
+   neighbor 3.3.3.3 peer group PEER-RR
+   neighbor 4.4.4.4 peer group PEER-RR
+   neighbor 5.5.5.5 peer group PEER-RR
+   neighbor 6.6.6.6 peer group PEER-RR
+   !
+   address-family vpn-ipv4
+      neighbor PEER-RR activate
+      neighbor default encapsulation mpls next-hop-self source-interface Loopback1
+      neighbor default encapsulation mpls next-hop-self received-vpnv4-routes
+   !
+   vrf vrf_routing
+      rd 33.33.33.33:1
+      route-target import vpn-ipv4 65100:1
+      route-target export vpn-ipv4 65100:1
+      redistribute connected
+      redistribute static
+!
+router ospf 100
+   router-id 3.3.3.3
+   passive-interface default
+   no passive-interface Ethernet1
+   no passive-interface Ethernet2
+   no passive-interface Ethernet4
+   no passive-interface Ethernet5
+   redistribute connected
+   network 10.0.0.4/30 area 0.0.0.0
+   network 10.0.0.12/30 area 0.0.0.0
+   network 10.0.0.24/30 area 0.0.0.0
+   network 10.0.0.28/30 area 0.0.0.0
+   max-lsa 12000
+   log-adjacency-changes detail
+!
+end

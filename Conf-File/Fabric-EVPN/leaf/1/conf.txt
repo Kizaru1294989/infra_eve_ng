@@ -1,0 +1,81 @@
+! Command: show running-config
+! device: L-1 (vEOS-lab, EOS-4.29.0.2F)
+!
+! boot system flash:/vEOS-lab.swi
+!
+enable password sha512 $6$LqGyROaoV5iZaIck$dPqC6nkD2NrohZEBa3IKRJA73BauIn4ediXlH18weQ3ApfTLCO7YE2kRixo9iWyMAgI7tBTK1wRAm90/kUboX.
+no aaa root
+!
+username cvpadmin privilege 15 secret sha512 $6$/M6tySe.0CtB5CZv$rVY5wujDkMsPcvmGQhniPVnkmRBbDT/O3w1WW/hpOGa3CSFXQ5ClwEnUvg0uxxZil0l8MmE14Oq710jPohAl41
+username scp privilege 15 shell /bin/bash secret sha512 $6$5wgDdqbVId68Wr3H$SkH/PcsbKOcXZIXXsmeoDIv17cK77oTQifzDNGV3AOKjA9XmNWfNtGUd09gCRmYJISeF9AI86AImLdfGbB4En/
+!
+transceiver qsfp default-mode 4x10G
+!
+service routing protocols model multi-agent
+!
+hostname L-1
+!
+spanning-tree mode mstp
+no spanning-tree vlan-id 4000
+!
+vlan 4000
+   trunk group MLAGPEER
+!
+vrf instance managment
+!
+management api http-commands
+   protocol http
+   no shutdown
+   !
+   vrf managment
+      no shutdown
+!
+aaa authentication login console local
+aaa authorization exec default local
+!
+interface Port-Channel10
+   description MLAG-PEER-LINK
+   switchport mode trunk
+   switchport trunk group MLAGPEER
+!
+interface Ethernet1
+!
+interface Ethernet2
+!
+interface Ethernet3
+   channel-group 10 mode active
+!
+interface Ethernet4
+   channel-group 10 mode active
+!
+interface Ethernet5
+!
+interface Ethernet6
+!
+interface Ethernet7
+!
+interface Ethernet8
+!
+interface Loopback0
+   ip address 100.10.10.3/32
+!
+interface Management1
+   vrf managment
+   ip address 10.43.192.160/24
+!
+interface Vlan4000
+   ip address 40.10.10.1/30
+!
+ip routing
+no ip routing vrf managment
+!
+mlag configuration
+   domain-id mlag10
+   local-interface Vlan4000
+   peer-address 40.10.10.2
+   peer-link Port-Channel10
+!
+ip route vrf managment 0.0.0.0/0 10.43.192.254
+!
+
+end

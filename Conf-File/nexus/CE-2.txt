@@ -1,0 +1,255 @@
+
+!Command: show running-config
+!Running configuration last done at: Tue Nov 19 10:28:25 2024
+!Time: Tue Nov 19 13:14:51 2024
+
+version 10.4(3) Bios:version
+hostname CE-2
+vdc CE-2 id 1
+  limit-resource vlan minimum 16 maximum 4094
+  limit-resource vrf minimum 2 maximum 4096
+  limit-resource port-channel minimum 0 maximum 511
+  limit-resource m4route-mem minimum 58 maximum 58
+  limit-resource m6route-mem minimum 8 maximum 8
+
+cfs eth distribute
+feature bgp
+feature interface-vlan
+feature lacp
+feature vpc
+
+username admin password 5 $5$KEBCMN$yuQp4r3lI/rkLRhMC3RWlrJwDe01EJz5ZwLZu4VLTM1  role network-admin
+ip domain-lookup
+copp profile strict
+rmon event 1 log trap public description FATAL(1) owner PMON@FATAL
+rmon event 2 log trap public description CRITICAL(2) owner PMON@CRITICAL
+rmon event 3 log trap public description ERROR(3) owner PMON@ERROR
+rmon event 4 log trap public description WARNING(4) owner PMON@WARNING
+rmon event 5 log trap public description INFORMATION(5) owner PMON@INFO
+
+vlan 1,203,205
+
+vrf context management
+  ip route 0.0.0.0/0 10.43.192.254
+vpc domain 10
+  peer-switch
+  role priority 10
+  peer-keepalive destination 192.168.69.1 source 192.168.69.2 vrf default
+  peer-gateway
+  layer3 peer-router
+  ip arp synchronize
+
+interface Vlan1
+  no ip redirects
+  no ipv6 redirects
+
+interface Vlan205
+  no shutdown
+  no ip redirects
+  ip address 198.51.100.2/29
+  no ipv6 redirects
+
+interface port-channel10
+  description peer-link-lyon
+  switchport
+  switchport mode trunk
+  switchport trunk allowed vlan 205
+  spanning-tree port type network
+  vpc peer-link
+
+interface Ethernet1/1
+  description keep-alive
+  ip address 192.168.69.2/24
+  no shutdown
+
+interface Ethernet1/2
+  description PALO-2
+  ip address 10.1.1.5/30
+  no shutdown
+
+interface Ethernet1/3
+  description FW-PALO-1
+  ip address 10.1.1.9/30
+  no shutdown
+
+interface Ethernet1/4
+  ip address 10.0.0.50/30
+  no shutdown
+
+interface Ethernet1/5
+
+interface Ethernet1/6
+  description peer-link-lyon
+  switchport
+  switchport mode trunk
+  switchport trunk allowed vlan 205
+  channel-group 10 mode active
+  no shutdown
+
+interface Ethernet1/7
+  description peer-link-lyon
+  switchport
+  switchport mode trunk
+  switchport trunk allowed vlan 205
+  channel-group 10 mode active
+  no shutdown
+
+interface Ethernet1/8
+
+interface Ethernet1/9
+
+interface Ethernet1/10
+
+interface Ethernet1/11
+
+interface Ethernet1/12
+
+interface Ethernet1/13
+
+interface Ethernet1/14
+
+interface Ethernet1/15
+
+interface Ethernet1/16
+
+interface Ethernet1/17
+
+interface Ethernet1/18
+
+interface Ethernet1/19
+
+interface Ethernet1/20
+
+interface Ethernet1/21
+
+interface Ethernet1/22
+
+interface Ethernet1/23
+
+interface Ethernet1/24
+
+interface Ethernet1/25
+
+interface Ethernet1/26
+
+interface Ethernet1/27
+
+interface Ethernet1/28
+
+interface Ethernet1/29
+
+interface Ethernet1/30
+
+interface Ethernet1/31
+
+interface Ethernet1/32
+
+interface Ethernet1/33
+
+interface Ethernet1/34
+
+interface Ethernet1/35
+
+interface Ethernet1/36
+
+interface Ethernet1/37
+
+interface Ethernet1/38
+
+interface Ethernet1/39
+
+interface Ethernet1/40
+
+interface Ethernet1/41
+
+interface Ethernet1/42
+
+interface Ethernet1/43
+
+interface Ethernet1/44
+
+interface Ethernet1/45
+
+interface Ethernet1/46
+
+interface Ethernet1/47
+
+interface Ethernet1/48
+
+interface Ethernet1/49
+
+interface Ethernet1/50
+
+interface Ethernet1/51
+
+interface Ethernet1/52
+
+interface Ethernet1/53
+
+interface Ethernet1/54
+
+interface Ethernet1/55
+
+interface Ethernet1/56
+
+interface Ethernet1/57
+
+interface Ethernet1/58
+
+interface Ethernet1/59
+
+interface Ethernet1/60
+
+interface Ethernet1/61
+
+interface Ethernet1/62
+
+interface Ethernet1/63
+
+interface Ethernet1/64
+
+interface mgmt0
+  vrf member management
+  ip address 10.43.192.42/24
+
+interface loopback0
+
+interface loopback1
+  ip address 69.10.10.2/32
+icam monitor scale
+
+line console
+line vty
+router bgp 65001
+  router-id 69.10.10.2
+  log-neighbor-changes
+  address-family ipv4 unicast
+    network 69.10.10.2/32
+    network 198.51.100.0/29
+    maximum-paths 4
+  neighbor 10.0.0.49
+    remote-as 65100
+    description Backbone-DC-2
+    update-source Ethernet1/4
+    address-family ipv4 unicast
+      soft-reconfiguration inbound always
+  neighbor 10.1.1.6
+    remote-as 65000
+    description PALO-2
+    update-source Ethernet1/2
+    address-family ipv4 unicast
+      soft-reconfiguration inbound always
+  neighbor 10.1.1.10
+    remote-as 65000
+    description PALO-1
+    update-source Ethernet1/3
+    address-family ipv4 unicast
+      soft-reconfiguration inbound always
+  neighbor 198.51.100.1
+    remote-as 65001
+    description LYON-1
+    update-source Vlan205
+    address-family ipv4 unicast
+      next-hop-self
+      soft-reconfiguration inbound always
+

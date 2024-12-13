@@ -1,0 +1,106 @@
+! Command: show running-config
+! device: S-2 (vEOS-lab, EOS-4.29.0.2F)
+!
+! boot system flash:/vEOS-lab.swi
+!
+enable password sha512 $6$LqGyROaoV5iZaIck$dPqC6nkD2NrohZEBa3IKRJA73BauIn4ediXlH18weQ3ApfTLCO7YE2kRixo9iWyMAgI7tBTK1wRAm90/kUboX.
+no aaa root
+!
+username cvpadmin privilege 15 secret sha512 $6$/M6tySe.0CtB5CZv$rVY5wujDkMsPcvmGQhniPVnkmRBbDT/O3w1WW/hpOGa3CSFXQ5ClwEnUvg0uxxZil0l8MmE14Oq710jPohAl41
+username scp privilege 15 shell /bin/bash secret sha512 $6$5wgDdqbVId68Wr3H$SkH/PcsbKOcXZIXXsmeoDIv17cK77oTQifzDNGV3AOKjA9XmNWfNtGUd09gCRmYJISeF9AI86AImLdfGbB4En/
+!
+transceiver qsfp default-mode 4x10G
+!
+service routing protocols model multi-agent
+!
+hostname S-2
+!
+spanning-tree mode mstp
+no spanning-tree vlan-id 4094
+!
+vrf instance managment
+!
+management api http-commands
+   protocol http
+   no shutdown
+   !
+   vrf managment
+      no shutdown
+!
+aaa authentication login console local
+aaa authorization exec default local
+!
+interface Ethernet1
+   no switchport
+   ip address 60.10.10.41/30
+!
+interface Ethernet2
+   no switchport
+   ip address 60.10.10.45/30
+!
+interface Ethernet3
+   no switchport
+   ip address 60.10.10.14/30
+!
+interface Ethernet4
+   no switchport
+   ip address 60.10.10.6/30
+!
+interface Ethernet5
+   no switchport
+   ip address 60.10.10.49/30
+!
+interface Ethernet6
+   no switchport
+   ip address 60.10.10.53/30
+!
+interface Ethernet7
+   no switchport
+   ip address 60.10.10.57/30
+!
+interface Ethernet8
+   no switchport
+   ip address 60.10.10.61/30
+!
+interface Loopback0
+   ip address 200.10.10.2/32
+!
+interface Management1
+   vrf managment
+   ip address 10.43.192.159/24
+!
+ip routing
+no ip routing vrf managment
+!
+ip route vrf managment 0.0.0.0/0 10.43.192.254
+!
+router bgp 65500
+   router-id 200.10.10.2
+   maximum-paths 8 ecmp 8
+   neighbor 60.10.10.5 remote-as 65501
+   neighbor 60.10.10.5 send-community extended
+   neighbor 60.10.10.5 maximum-routes 12000
+   neighbor 60.10.10.13 remote-as 65501
+   neighbor 60.10.10.13 send-community extended
+   neighbor 60.10.10.13 maximum-routes 12000
+   neighbor 60.10.10.42 remote-as 65502
+   neighbor 60.10.10.42 send-community extended
+   neighbor 60.10.10.42 maximum-routes 12000
+   neighbor 60.10.10.46 remote-as 65502
+   neighbor 60.10.10.46 send-community extended
+   neighbor 60.10.10.46 maximum-routes 12000
+   neighbor 60.10.10.50 remote-as 65503
+   neighbor 60.10.10.50 send-community extended
+   neighbor 60.10.10.50 maximum-routes 12000
+   neighbor 60.10.10.54 remote-as 65503
+   neighbor 60.10.10.54 send-community extended
+   neighbor 60.10.10.54 maximum-routes 12000
+   neighbor 60.10.10.58 remote-as 65504
+   neighbor 60.10.10.58 send-community extended
+   neighbor 60.10.10.58 maximum-routes 12000
+   neighbor 60.10.10.62 remote-as 65504
+   neighbor 60.10.10.62 send-community extended
+   neighbor 60.10.10.62 maximum-routes 12000
+   network 200.10.10.1/32
+!
+end
