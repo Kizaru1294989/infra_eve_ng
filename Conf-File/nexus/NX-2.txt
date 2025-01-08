@@ -1,7 +1,5 @@
-
-!Command: show running-config
-!Running configuration last done at: Mon Dec  2 13:03:23 2024
-!Time: Tue Dec  3 07:25:52 2024
+!Running configuration last done at: Wed Dec 11 12:44:30 2024
+!Time: Mon Dec 30 14:57:29 2024
 
 version 10.4(3) Bios:version
 hostname NX-2
@@ -28,7 +26,7 @@ rmon event 3 log trap public description ERROR(3) owner PMON@ERROR
 rmon event 4 log trap public description WARNING(4) owner PMON@WARNING
 rmon event 5 log trap public description INFORMATION(5) owner PMON@INFO
 
-vlan 1,100,205
+vlan 1,300,205
 
 vrf context management
   ip route 0.0.0.0/0 10.43.192.254
@@ -44,6 +42,12 @@ interface Vlan1
   no ip redirects
   no ipv6 redirects
 
+interface Vlan300
+  no shutdown
+  no ip redirects
+  ip address 10.1.1.35/29
+  no ipv6 redirects
+
 interface Vlan205
   no shutdown
   no ip redirects
@@ -54,9 +58,19 @@ interface port-channel10
   description peer-link-paris
   switchport
   switchport mode trunk
-  switchport trunk allowed vlan 205
+  switchport trunk allowed vlan 300,205
   spanning-tree port type network
   vpc peer-link
+
+interface port-channel300
+  switchport
+  switchport mode trunk
+  switchport trunk allowed vlan 300,205
+
+interface port-channel200
+  switchport
+  switchport mode trunk
+  switchport trunk allowed vlan 300,205
 
 interface Ethernet1/1
   description keep-alive
@@ -74,14 +88,26 @@ interface Ethernet1/3
   no shutdown
 
 interface Ethernet1/4
+  description Fortigate-2
+  switchport
+  switchport mode trunk
+  switchport trunk allowed vlan 300,205
+  channel-group 200 mode active
+  no shutdown
 
 interface Ethernet1/5
+  description Fortigate-1
+  switchport
+  switchport mode trunk
+  switchport trunk allowed vlan 300,205
+  channel-group 300 mode active
+  no shutdown
 
 interface Ethernet1/6
   description peer-link-paris
   switchport
   switchport mode trunk
-  switchport trunk allowed vlan 205
+  switchport trunk allowed vlan 300,205
   channel-group 10 mode active
   no shutdown
 
@@ -89,7 +115,7 @@ interface Ethernet1/7
   description peer-link-paris
   switchport
   switchport mode trunk
-  switchport trunk allowed vlan 205
+  switchport trunk allowed vlan 300,205
   channel-group 10 mode active
   no shutdown
 
@@ -236,7 +262,7 @@ router bgp 65002
   neighbor 10.1.1.34
     remote-as 65003
     description Fortigate-1
-    update-source Vlan100
+    update-source Vlan300
     address-family ipv4 unicast
       soft-reconfiguration inbound always
   neighbor 198.51.200.1
@@ -245,5 +271,3 @@ router bgp 65002
     update-source Vlan205
     address-family ipv4 unicast
       soft-reconfiguration inbound always
-
-

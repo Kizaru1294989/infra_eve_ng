@@ -44,22 +44,6 @@ interface Port-Channel100
    switchport access vlan 100
    mlag 100
 !
-interface Port-Channel101
-   switchport access vlan 100
-   mlag 101
-!
-interface Port-Channel102
-   switchport access vlan 100
-   mlag 102
-!
-interface Port-Channel103
-   switchport access vlan 100
-   mlag 103
-!
-interface Port-Channel104
-   switchport access vlan 100
-   mlag 104
-!
 interface Ethernet1
    no switchport
    ip address 60.10.10.26/30
@@ -75,28 +59,15 @@ interface Ethernet4
    channel-group 10 mode active
 !
 interface Ethernet5
-   channel-group 100 mode active
-   lacp timer fast
 !
 interface Ethernet6
-   channel-group 101 mode active
-   lacp timer fast
 !
 interface Ethernet7
-   channel-group 102 mode active
-   lacp timer fast
 !
 interface Ethernet8
-   channel-group 103 mode active
+   description Access 2
+   channel-group 100 mode active
    lacp timer fast
-!
-interface Ethernet9
-   channel-group 104 mode active
-   lacp timer fast
-!
-interface Ethernet10
-!
-interface Ethernet11
 !
 interface Loopback0
    ip address 100.10.10.5/32
@@ -127,6 +98,7 @@ mlag configuration
    peer-address 56.10.10.2
    peer-link Port-Channel10
 !
+ip route 10.43.100.0/24 10.43.100.1
 ip route vrf managment 0.0.0.0/0 10.43.192.254
 !
 router bgp 65503

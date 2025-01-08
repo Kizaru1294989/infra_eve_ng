@@ -24,12 +24,14 @@ def border_leaf(password, user):
     ssh_scp_files("10.43.192.157", user, password, "/home/rais/Arista_Nexus_Backbone/Conf-File/Fabric-EVPN/leaf/Border/2/conf.txt", "/home/cvpadmin/", "LEAF-BORDER-2")         
 
 def leaf(password, user):
-    ssh_scp_files("10.43.192.160", user, password, "/home/rais/Arista_Nexus_Backbone/Conf-File/Fabric-EVPN/leaf/1/conf.txt", "/home/cvpadmin/", "LEAF-1")
-    ssh_scp_files("10.43.192.161", user, password, "/home/rais/Arista_Nexus_Backbone/Conf-File/Fabric-EVPN/leaf/2/conf.txt", "/home/cvpadmin/", "LEAF-2")
-    # ssh_scp_files("10.43.192.162", user, password, "/home/rais/Arista_Nexus_Backbone/Conf-File/Fabric-EVPN/leaf/3/conf.txt", "/home/cvpadmin/", "LEAF-3")
-    # ssh_scp_files("10.43.192.163", user, password, "/home/rais/Arista_Nexus_Backbone/Conf-File/Fabric-EVPN/leaf/4/conf.txt", "/home/cvpadmin/", "LEAF-4") 
-    # ssh_scp_files("10.43.192.164", user, password, "/home/rais/Arista_Nexus_Backbone/Conf-File/Fabric-EVPN/leaf/5/conf.txt", "/home/cvpadmin/", "LEAF-5")
-    # ssh_scp_files("10.43.192.165", user, password, "/home/rais/Arista_Nexus_Backbone/Conf-File/Fabric-EVPN/leaf/6/conf.txt", "/home/cvpadmin/", "LEAF-6")  
+    ssh_scp_files("10.43.192.156", user, password, "/home/rais/Arista_Nexus_Backbone/Conf-File/Fabric-EVPN/leaf/1/conf.txt", "/home/cvpadmin/", "LEAF-BORDER-1")
+    ssh_scp_files("10.43.192.157", user, password, "/home/rais/Arista_Nexus_Backbone/Conf-File/Fabric-EVPN/leaf/2/conf.txt", "/home/cvpadmin/", "LEAF-BORDER-2") 
+    ssh_scp_files("10.43.192.160", user, password, "/home/rais/Arista_Nexus_Backbone/Conf-File/Fabric-EVPN/leaf/3/conf.txt", "/home/cvpadmin/", "LEAF-3")
+    ssh_scp_files("10.43.192.161", user, password, "/home/rais/Arista_Nexus_Backbone/Conf-File/Fabric-EVPN/leaf/4/conf.txt", "/home/cvpadmin/", "LEAF-4")
+    ssh_scp_files("10.43.192.162", user, password, "/home/rais/Arista_Nexus_Backbone/Conf-File/Fabric-EVPN/leaf/5/conf.txt", "/home/cvpadmin/", "LEAF-5")
+    ssh_scp_files("10.43.192.163", user, password, "/home/rais/Arista_Nexus_Backbone/Conf-File/Fabric-EVPN/leaf/6/conf.txt", "/home/cvpadmin/", "LEAF-6") 
+    ssh_scp_files("10.43.192.164", user, password, "/home/rais/Arista_Nexus_Backbone/Conf-File/Fabric-EVPN/leaf/7/conf.txt", "/home/cvpadmin/", "LEAF-7")
+    ssh_scp_files("10.43.192.165", user, password, "/home/rais/Arista_Nexus_Backbone/Conf-File/Fabric-EVPN/leaf/8/conf.txt", "/home/cvpadmin/", "LEAF-8")  
 
 def spine(password, user):
     ssh_scp_files("10.43.192.158", user, password, "/home/rais/Arista_Nexus_Backbone/Conf-File/Fabric-EVPN/spine/1/conf.txt", "/home/cvpadmin/", "SPINE-1")
@@ -41,7 +43,7 @@ def access(password, user):
     ssh_scp_files("10.43.192.168", user, password, "/home/rais/Arista_Nexus_Backbone/Conf-File/Fabric-EVPN/Access/3/conf.txt", "/home/cvpadmin/", "ACCESS-3")  
 
 def execute_scp_command(password, user):
-    border_leaf(password, user)
+    # border_leaf(password, user)
     spine(password, user)
     leaf(password, user)
     # access(password, user)

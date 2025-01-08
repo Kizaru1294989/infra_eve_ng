@@ -24,7 +24,24 @@
             "leaf_2": {
                 "ansible_host": "10.43.192.161",
                 "ansible_httpapi_port": 443
+            },
+            "leaf_3": {
+                "ansible_host": "10.43.192.162",
+                "ansible_httpapi_port": 443
+            },
+            "leaf_4": {
+                "ansible_host": "10.43.192.163",
+                "ansible_httpapi_port": 443
+            },
+            "leaf_5": {
+                "ansible_host": "10.43.192.164",
+                "ansible_httpapi_port": 443
+            },
+            "leaf_6": {
+                "ansible_host": "10.43.192.165",
+                "ansible_httpapi_port": 443
             }
+            
         },
         "vars": {
             "ansible_network_os": "eos",

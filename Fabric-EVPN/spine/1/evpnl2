@@ -75,7 +75,6 @@ no ip routing vrf managment
 ip prefix-list rt-conn
    seq 10 permit 200.10.10.1/32
 !
-ip route 10.43.100.0/24 10.43.100.1
 ip route vrf managment 0.0.0.0/0 10.43.192.254
 !
 route-map rt-conn permit 10
@@ -94,23 +93,22 @@ router bgp 65500
    neighbor VTEP-EVPN-TRANSIT ebgp-multihop
    neighbor VTEP-EVPN-TRANSIT send-community extended
    neighbor VTEP-EVPN-TRANSIT maximum-routes 0
-   neighbor 100.10.10.1 peer group VTEP-EVPN-TRANSIT
-   neighbor 100.10.10.1 remote-as 65501
-   neighbor 100.10.10.2 peer group VTEP-EVPN-TRANSIT
-   neighbor 100.10.10.2 remote-as 65501
-   neighbor 100.10.10.3 peer group VTEP-EVPN-TRANSIT
-   neighbor 100.10.10.3 remote-as 65502
-   neighbor 100.10.10.4 peer group VTEP-EVPN-TRANSIT
-   neighbor 100.10.10.4 remote-as 65502
-   neighbor 100.10.10.5 peer group VTEP-EVPN-TRANSIT
-   neighbor 100.10.10.5 remote-as 65503
-   neighbor 100.10.10.6 peer group VTEP-EVPN-TRANSIT
-   neighbor 100.10.10.6 remote-as 65503
-   neighbor 100.10.10.7 peer group VTEP-EVPN-TRANSIT
-   neighbor 100.10.10.7 remote-as 65504
-   neighbor 100.10.10.8 peer group VTEP-EVPN-TRANSIT
-   neighbor 100.10.10.8 remote-as 65504
-   
+   neighbor 60.10.10.1 peer group VTEP-EVPN-TRANSIT
+   neighbor 60.10.10.1 remote-as 65501
+   neighbor 60.10.10.9 peer group VTEP-EVPN-TRANSIT
+   neighbor 60.10.10.9 remote-as 65501
+   neighbor 60.10.10.18 peer group VTEP-EVPN-TRANSIT
+   neighbor 60.10.10.18 remote-as 65502
+   neighbor 60.10.10.22 peer group VTEP-EVPN-TRANSIT
+   neighbor 60.10.10.22 remote-as 65502
+   neighbor 60.10.10.26 peer group VTEP-EVPN-TRANSIT
+   neighbor 60.10.10.26 remote-as 65503
+   neighbor 60.10.10.30 peer group VTEP-EVPN-TRANSIT
+   neighbor 60.10.10.30 remote-as 65503
+   neighbor 60.10.10.34 peer group VTEP-EVPN-TRANSIT
+   neighbor 60.10.10.34 remote-as 65504
+   neighbor 60.10.10.38 peer group VTEP-EVPN-TRANSIT
+   neighbor 60.10.10.38 remote-as 65504
    neighbor 60.10.10.1 peer group VTEP
    neighbor 60.10.10.1 remote-as 65501
    neighbor 60.10.10.9 peer group VTEP

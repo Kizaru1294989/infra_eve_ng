@@ -1,5 +1,5 @@
 ! Command: show running-config
-! device: L-5 (vEOS-lab, EOS-4.29.0.2F)
+! device: L-7 (vEOS-lab, EOS-4.29.0.2F)
 !
 ! boot system flash:/vEOS-lab.swi
 !
@@ -13,7 +13,7 @@ transceiver qsfp default-mode 4x10G
 !
 service routing protocols model multi-agent
 !
-hostname L-5
+hostname L-7
 !
 spanning-tree mode mstp
 no spanning-tree vlan-id 4000
@@ -56,17 +56,13 @@ interface Port-Channel103
    switchport access vlan 100
    mlag 103
 !
-interface Port-Channel104
-   switchport access vlan 100
-   mlag 104
-!
 interface Ethernet1
    no switchport
-   ip address 60.10.10.26/30
+   ip address 60.10.10.34/30
 !
 interface Ethernet2
    no switchport
-   ip address 60.10.10.50/30
+   ip address 60.10.10.58/30
 !
 interface Ethernet3
    channel-group 10 mode active
@@ -90,33 +86,25 @@ interface Ethernet8
    channel-group 103 mode active
    lacp timer fast
 !
-interface Ethernet9
-   channel-group 104 mode active
-   lacp timer fast
-!
-interface Ethernet10
-!
-interface Ethernet11
-!
 interface Loopback0
-   ip address 100.10.10.5/32
+   ip address 100.10.10.7/32
 !
 interface Loopback1
-   ip address 5.5.5.5/32
+   ip address 7.7.7.7/32
 !
 interface Management1
    vrf managment
-   ip address 10.43.192.162/24
+   ip address 10.43.192.164/24
 !
 interface Vlan4000
-   ip address 56.10.10.1/30
+   ip address 78.10.10.1/30
 !
 interface Vxlan1
    vxlan source-interface Loopback1
    vxlan udp-port 4789
    vxlan vlan 100 vni 100
 !
-ip virtual-router mac-address 00:1c:73:00:00:56
+ip virtual-router mac-address 00:1c:73:00:00:78
 !
 ip routing
 no ip routing vrf managment
@@ -124,20 +112,21 @@ no ip routing vrf managment
 mlag configuration
    domain-id mlag10
    local-interface Vlan4000
-   peer-address 56.10.10.2
+   peer-address 78.10.10.2
    peer-link Port-Channel10
 !
+ip route 10.43.100.0/24 10.43.100.1
 ip route vrf managment 0.0.0.0/0 10.43.192.254
 !
-router bgp 65503
-   router-id 100.10.10.5
+router bgp 65504
+   router-id 100.10.10.7
    maximum-paths 4 ecmp 4
    neighbor PEER-LEAF peer group
-   neighbor PEER-LEAF remote-as 65503
+   neighbor PEER-LEAF remote-as 65504
    neighbor PEER-LEAF bfd
    neighbor PEER-LEAF maximum-routes 12000
    neighbor PEER-LEAF-EVPN-TRANSIT peer group
-   neighbor PEER-LEAF-EVPN-TRANSIT remote-as 65503
+   neighbor PEER-LEAF-EVPN-TRANSIT remote-as 65504
    neighbor PEER-LEAF-EVPN-TRANSIT next-hop-self
    neighbor PEER-LEAF-EVPN-TRANSIT update-source Loopback0
    neighbor PEER-LEAF-EVPN-TRANSIT send-community
@@ -154,14 +143,14 @@ router bgp 65503
    neighbor SPINE-EVPN-TRANSIT maximum-routes 0
    neighbor 200.10.10.1 peer group SPINE-EVPN-TRANSIT
    neighbor 200.10.10.2 peer group SPINE-EVPN-TRANSIT
-   neighbor 100.10.10.6 peer group PEER-LEAF-EVPN-TRANSIT
-   neighbor 56.10.10.2 peer group PEER-LEAF
-   neighbor 60.10.10.25 peer group SPINE
-   neighbor 60.10.10.49 peer group SPINE
+   neighbor 100.10.10.8 peer group PEER-LEAF-EVPN-TRANSIT
+   neighbor 78.10.10.2 peer group PEER-LEAF
+   neighbor 60.10.10.33 peer group SPINE
+   neighbor 60.10.10.57 peer group SPINE
    redistribute connected
    !
    vlan 100
-      rd 5.5.5.5:100
+      rd 7.7.7.7:100
       route-target both 1:100
       redistribute learned
       redistribute static

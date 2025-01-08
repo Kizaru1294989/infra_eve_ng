@@ -16,7 +16,12 @@ service routing protocols model multi-agent
 hostname L-3
 !
 spanning-tree mode mstp
-no spanning-tree vlan-id 4094
+no spanning-tree vlan-id 4000
+!
+vlan 100
+!
+vlan 4000
+   trunk group MLAGPEER
 !
 vrf instance managment
 !
@@ -30,29 +35,129 @@ management api http-commands
 aaa authentication login console local
 aaa authorization exec default local
 !
+interface Port-Channel10
+   description MLAG-PEER-LINK
+   switchport mode trunk
+   switchport trunk group MLAGPEER
+!
+interface Port-Channel100
+   switchport access vlan 100
+   mlag 100
+!
+interface Port-Channel101
+   switchport access vlan 100
+   mlag 101
+!
+interface Port-Channel102
+   switchport access vlan 100
+   mlag 102
+!
+interface Port-Channel103
+   switchport access vlan 100
+   mlag 103
+!
 interface Ethernet1
+   no switchport
+   ip address 60.10.10.18/30
 !
 interface Ethernet2
+   no switchport
+   ip address 60.10.10.42/30
 !
 interface Ethernet3
+   channel-group 10 mode active
 !
 interface Ethernet4
+   channel-group 10 mode active
 !
 interface Ethernet5
+   channel-group 100 mode active
+   lacp timer fast
 !
 interface Ethernet6
+   channel-group 101 mode active
+   lacp timer fast
 !
 interface Ethernet7
+   channel-group 102 mode active
+   lacp timer fast
 !
 interface Ethernet8
+   channel-group 103 mode active
+   lacp timer fast
+!
+interface Loopback0
+   ip address 100.10.10.3/32
+!
+interface Loopback1
+   ip address 3.3.3.3/32
 !
 interface Management1
    vrf managment
-   ip address 10.43.192.162/24
+   ip address 10.43.192.160/24
 !
-no ip routing
+interface Vlan4000
+   ip address 34.10.10.1/30
+!
+interface Vxlan1
+   vxlan source-interface Loopback1
+   vxlan udp-port 4789
+   vxlan vlan 100 vni 100
+!
+ip virtual-router mac-address 00:1c:73:00:00:34
+!
+ip routing
 no ip routing vrf managment
+!
+mlag configuration
+   domain-id mlag10
+   local-interface Vlan4000
+   peer-address 34.10.10.2
+   peer-link Port-Channel10
 !
 ip route vrf managment 0.0.0.0/0 10.43.192.254
 !
-end
+router bgp 65502
+   router-id 100.10.10.3
+   maximum-paths 4 ecmp 4
+   neighbor PEER-LEAF peer group
+   neighbor PEER-LEAF remote-as 65502
+   neighbor PEER-LEAF bfd
+   neighbor PEER-LEAF maximum-routes 12000
+   neighbor PEER-LEAF-EVPN-TRANSIT peer group
+   neighbor PEER-LEAF-EVPN-TRANSIT remote-as 65502
+   neighbor PEER-LEAF-EVPN-TRANSIT next-hop-self
+   neighbor PEER-LEAF-EVPN-TRANSIT update-source Loopback0
+   neighbor PEER-LEAF-EVPN-TRANSIT send-community
+   neighbor PEER-LEAF-EVPN-TRANSIT maximum-routes 0
+   neighbor SPINE peer group
+   neighbor SPINE remote-as 65500
+   neighbor SPINE bfd
+   neighbor SPINE maximum-routes 12000
+   neighbor SPINE-EVPN-TRANSIT peer group
+   neighbor SPINE-EVPN-TRANSIT remote-as 65500
+   neighbor SPINE-EVPN-TRANSIT update-source Loopback0
+   neighbor SPINE-EVPN-TRANSIT ebgp-multihop
+   neighbor SPINE-EVPN-TRANSIT send-community
+   neighbor SPINE-EVPN-TRANSIT maximum-routes 0
+   neighbor 200.10.10.1 peer group SPINE-EVPN-TRANSIT
+   neighbor 200.10.10.2 peer group SPINE-EVPN-TRANSIT
+   neighbor 100.10.10.4 peer group PEER-LEAF-EVPN-TRANSIT
+   neighbor 34.10.10.2 peer group PEER-LEAF
+   neighbor 60.10.10.17 peer group SPINE
+   neighbor 60.10.10.41 peer group SPINE
+   redistribute connected
+   !
+   vlan 100
+      rd 3.3.3.3:100
+      route-target both 1:100
+      redistribute learned
+      redistribute static
+   !
+   address-family evpn
+      neighbor SPINE-EVPN-TRANSIT activate
+   !
+   address-family ipv4
+      no neighbor SPINE-EVPN-TRANSIT activate
+!
+endd

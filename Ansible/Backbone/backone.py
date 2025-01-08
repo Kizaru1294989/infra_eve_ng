@@ -47,7 +47,7 @@ def run_ansible_playbook(playbook_path):
 
 def main():
     execute_scp_command("Exaprobe1234" , "cvpadmin")
-    playbook = run_ansible_playbook("/home/rais/Arista_Nexus_Backbone/Ansible/replace.yml")
+    playbook = run_ansible_playbook("/home/rais/Arista_Nexus_Backbone/Ansible/Backbone/replace.yml")
     return playbook
     
 
